@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1 - Windows timezone dependency fix
+
+### Fixed
+
+- 补充 `tzdata` 依赖，修复 Windows 环境缺少 IANA 时区数据库时无法加载 `Asia/Shanghai` 的问题。
+
 ## 0.3.0 - Windows exe alpha packaging
 
 ### Added

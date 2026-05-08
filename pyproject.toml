@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "PhotoDateRescue"
-version = "0.3.0"
+version = "0.3.1"
 description = "Mac-first tool for rescuing photo and video timeline metadata after Android-to-iPhone migrations."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -15,6 +15,7 @@ license = "MIT"
 dependencies = [
   "Pillow>=10.0.0",
   "pillow-heif>=0.18.0",
+  "tzdata>=2025.2",
 ]
 
 [project.optional-dependencies]
@@ -22,6 +23,7 @@ dev = [
   "Pillow>=10.0.0",
   "pillow-heif>=0.18.0",
   "pytest>=8.0.0",
+  "tzdata>=2025.2",
 ]
 
 [project.scripts]
