@@ -77,7 +77,7 @@ Before creating a GitHub Release:
 - Run tests and any relevant build command.
 - Build the macOS app from a known-good environment.
 - Zip the `.app` as a release artifact and record its SHA256.
-- Use `docs/release-notes-v0.1.0.md` as the style reference for release notes.
+- Use the existing `docs/release-notes-v*.md` files as the style reference for release notes.
 
 # Retrospective Rule
 
