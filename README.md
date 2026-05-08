@@ -10,6 +10,20 @@
 
 主要面向安卓手机先导出到电脑，再由本工具处理，最后手动导入 Apple Photos / iCloud 的场景。macOS 是优先验证平台；Windows 支持核心的扫描、报告、普通照片 / 视频修复和 `adb` 导出流程；Windows 不承诺生成 Apple Photos 可识别的 Live Photo。
 
+## 普通用户先看这里
+
+如果你只是想修复自己的相册时间线，优先下载 GitHub Release 里的 macOS 图形界面压缩包：
+
+1. 打开 [Releases](https://github.com/Teddy-creator/PhotoDateRescue/releases)。
+2. 下载最新版本里的 `PhotoDateRescue-*-macOS.zip`。
+3. 解压后右键点击 `PhotoDateRescue.app`，选择“打开”。
+4. 选择安卓导出的照片 / 视频文件夹和安全输出文件夹。
+5. 先扫描，再生成修复后的安全副本。
+
+如果 macOS 提示“无法验证开发者”，这是未签名开源工具的常见提示。确认来源是本仓库 Release 后，请使用右键“打开”，不要直接双击。
+
+开发者或想使用高级命令的用户，再参考下面的源码安装方式。
+
 ## Features
 
 - 中文向导 `photodaterescue wizard`，适合普通用户直接上手。

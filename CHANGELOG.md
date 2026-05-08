@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.1 - Release download polish
+
+### Changed
+
+- README 首屏新增普通用户下载 GitHub Release 版的指引。
+- 补充未签名 macOS `.app` 需要右键打开的说明。
+- GUI 在扫描 / 修复前检查必需依赖 ExifTool，并给出更清楚的中文提示。
+
 ## 0.1.0 - Mac-first preview
 
 ### Added

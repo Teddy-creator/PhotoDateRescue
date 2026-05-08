@@ -44,6 +44,20 @@ class PhotoDateRescueGuiController:
             ),
         ]
 
+    def validate_required_dependencies(self) -> None:
+        missing = [status for status in self.check_dependencies() if status.required and not status.available]
+        if not missing:
+            return
+        lines = [
+            "缺少必需依赖：{0}".format(", ".join(status.name for status in missing)),
+            "",
+            "PhotoDateRescue 需要 ExifTool 来读取照片和视频时间信息。",
+            "请先安装 ExifTool，再重新打开本工具。",
+            "",
+            "macOS 推荐安装命令：brew install exiftool",
+        ]
+        raise GuiValidationError("\n".join(lines))
+
     def suggest_output_folder(self, source: PathInput) -> Path:
         source = self._coerce_path(source, "请选择安卓照片 / 视频导出文件夹。")
         return source.with_name("{0}-PhotoDateRescue-output".format(source.name))
@@ -60,6 +74,7 @@ class PhotoDateRescueGuiController:
             raise GuiValidationError("输出路径不是文件夹，请重新选择。")
 
     def scan(self, source: PathInput, output_base: PathInput) -> GuiScanSummary:
+        self.validate_required_dependencies()
         self.validate_folders(source, output_base)
         source = self._coerce_path(source, "请选择安卓照片 / 视频导出文件夹。")
         output_base = self._coerce_path(output_base, "请选择安全输出文件夹。")
@@ -82,6 +97,7 @@ class PhotoDateRescueGuiController:
         )
 
     def repair(self, source: PathInput, output_base: PathInput) -> GuiRepairSummary:
+        self.validate_required_dependencies()
         self.validate_folders(source, output_base)
         source = self._coerce_path(source, "请选择安卓照片 / 视频导出文件夹。")
         output_base = self._coerce_path(output_base, "请选择安全输出文件夹。")

@@ -118,6 +118,21 @@ def test_gui_controller_reports_required_and_optional_dependencies(monkeypatch):
     assert by_name["FFmpeg"].required is False
 
 
+def test_gui_controller_rejects_missing_required_dependency(monkeypatch):
+    from photodaterescue.gui_controller import GuiValidationError, PhotoDateRescueGuiController
+
+    monkeypatch.setattr("photodaterescue.gui_controller.find_tool", lambda name: None)
+
+    try:
+        PhotoDateRescueGuiController().validate_required_dependencies()
+    except GuiValidationError as exc:
+        message = str(exc)
+        assert "缺少必需依赖" in message
+        assert "brew install exiftool" in message
+    else:
+        raise AssertionError("expected missing ExifTool to fail")
+
+
 def test_gui_scan_writes_reports_and_returns_summary(monkeypatch, tmp_path):
     from photodaterescue.gui_controller import PhotoDateRescueGuiController
 
@@ -132,6 +147,7 @@ def test_gui_scan_writes_reports_and_returns_summary(monkeypatch, tmp_path):
     ]
 
     monkeypatch.setattr("photodaterescue.gui_controller.ExifToolClient", lambda: object())
+    monkeypatch.setattr("photodaterescue.gui_controller.find_tool", lambda name: "/usr/bin/" + name)
     monkeypatch.setattr("photodaterescue.gui_controller.analyze_directory", lambda *args, **kwargs: records)
     monkeypatch.setattr("photodaterescue.gui_controller.write_reports", lambda *args, **kwargs: calls.append(args))
 
@@ -155,6 +171,7 @@ def test_gui_repair_returns_summary(monkeypatch, tmp_path):
     calls = []
 
     monkeypatch.setattr("photodaterescue.gui_controller.ExifToolClient", lambda: object())
+    monkeypatch.setattr("photodaterescue.gui_controller.find_tool", lambda name: "/usr/bin/" + name)
     monkeypatch.setattr(
         "photodaterescue.gui_controller.repair_directory",
         lambda *args, **kwargs: calls.append((args, kwargs))
