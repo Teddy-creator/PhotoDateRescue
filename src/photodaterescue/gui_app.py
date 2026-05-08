@@ -25,6 +25,7 @@ class PhotoDateRescueApp:
         self.output_var = tk.StringVar()
         self.status_var = tk.StringVar(value="请选择安卓照片 / 视频导出文件夹和安全输出文件夹。")
         self.dependency_var = tk.StringVar(value="正在检查依赖...")
+        self.platform_var = tk.StringVar(value=format_platform_guidance())
         self.source_button: Optional[ttk.Button] = None
         self.output_button: Optional[ttk.Button] = None
         self.scan_button: Optional[ttk.Button] = None
@@ -61,6 +62,10 @@ class PhotoDateRescueApp:
             wraplength=720,
         )
         safety.pack(anchor="w", pady=(0, 16))
+
+        platform_frame = ttk.LabelFrame(main, text="当前边界", padding=14)
+        platform_frame.pack(fill="x", pady=(0, 14))
+        ttk.Label(platform_frame, textvariable=self.platform_var, wraplength=720, justify="left").pack(anchor="w")
 
         folder_frame = ttk.LabelFrame(main, text="1. 选择文件夹", padding=14)
         folder_frame.pack(fill="x", pady=(0, 14))
@@ -130,6 +135,11 @@ class PhotoDateRescueApp:
         except GuiValidationError:
             return
         self.output_var.set(str(suggested))
+        self.status_var.set(
+            "已根据安卓导出文件夹推荐安全输出文件夹。\n"
+            "请确认输出文件夹不是原始文件夹，然后点击“开始扫描”。\n\n"
+            "推荐输出位置：{0}".format(suggested)
+        )
 
     def scan(self) -> None:
         if self._busy:
@@ -150,9 +160,17 @@ class PhotoDateRescueApp:
         return (
             "扫描完成。\n"
             "共发现 {0} 个文件：照片 {1}，视频 {2}。\n"
-            "可修复 {3}，正常 {4}，高风险 {5}，不支持 {6}，错误 {7}。\n"
+            "\n"
+            "结果分类：\n"
+            "- 可以尝试修复：{3}\n"
+            "- 已经正常：{4}\n"
+            "- 建议先人工抽查：{5}\n"
+            "- 暂不支持：{6}\n"
+            "- 读取出错：{7}\n"
+            "\n"
             "报告位置：{8}\n\n"
-            "下一步：请先看摘要。如果结果合理，再点击“生成修复后的安全副本”。"
+            "下一步：如果数量和你的预期接近，可以点击“生成修复后的安全副本”。"
+            "如果高风险或错误很多，请先打开报告检查，不要急着导入 Apple Photos。"
         ).format(
             summary.total_files,
             summary.photo_files,
@@ -186,7 +204,11 @@ class PhotoDateRescueApp:
             "生成完成。\n"
             "复制 {0}，修复 {1}，失败 {2}，跳过 {3}。\n"
             "输出位置：{4}\n\n"
-            "建议：先抽查少量结果，再手动导入 Apple Photos。确认无误前，不要删除原始文件。"
+            "建议下一步：\n"
+            "1. 点击“打开输出文件夹”。\n"
+            "2. 先抽查少量修复结果。\n"
+            "3. 只把确认无误的小批量文件手动导入 Apple Photos。\n"
+            "4. 确认无误前，不要删除手机或电脑里的原始文件。"
         ).format(summary.copied, summary.repaired, summary.failed, summary.skipped, summary.output_dir)
 
     def open_output(self) -> None:
@@ -263,3 +285,13 @@ def open_folder(path: Path) -> None:
         subprocess.run(["open", str(path)], check=False)
         return
     subprocess.run(["xdg-open", str(path)], check=False)
+
+
+def format_platform_guidance() -> str:
+    platform = current_platform()
+    base = "本图形界面只处理普通照片 / 视频时间线修复；不会自动导入 Apple Photos / iCloud，也不会删除原图。"
+    if platform.is_windows:
+        return base + "\nWindows 当前不承诺 Live Photo 构建或 Apple Photos 识别。"
+    if platform.is_macos:
+        return base + "\n如需高级 Motion Photo / Live Photo 恢复，请使用 CLI 并先 dry-run。"
+    return base + "\n当前平台属于源码运行路径，请先用小样本验证。"

@@ -3,7 +3,7 @@ from photodaterescue.cli import main
 
 
 def test_package_exposes_version():
-    assert __version__ == "0.1.2"
+    assert __version__ == "0.2.0"
 
 
 def test_module_entrypoint_runs_help():
@@ -90,6 +90,8 @@ def test_gui_busy_state_disables_primary_buttons():
 def test_gui_suggests_output_without_overwriting_existing_choice(tmp_path):
     from photodaterescue.gui_app import PhotoDateRescueApp
 
+    status_updates = []
+
     class FakeVar:
         def __init__(self, value=""):
             self.value = value
@@ -107,15 +109,19 @@ def test_gui_suggests_output_without_overwriting_existing_choice(tmp_path):
     app = object.__new__(PhotoDateRescueApp)
     app.controller = FakeController()
     app.output_var = FakeVar()
+    app.status_var = FakeVar()
 
     app._suggest_output_from_source("/tmp/Xiaomi14-raw-export")
 
     assert app.output_var.get().endswith("Xiaomi14-raw-export-PhotoDateRescue-output")
+    status_updates.append(app.status_var.get())
+    assert "推荐安全输出文件夹" in status_updates[-1]
 
     app.output_var.set("/tmp/custom-output")
     app._suggest_output_from_source("/tmp/Another")
 
     assert app.output_var.get() == "/tmp/custom-output"
+    assert app.status_var.get() == status_updates[-1]
 
 
 def test_gui_open_folder_uses_windows_startfile(monkeypatch, tmp_path):
@@ -128,3 +134,55 @@ def test_gui_open_folder_uses_windows_startfile(monkeypatch, tmp_path):
     open_folder(tmp_path)
 
     assert calls == [tmp_path]
+
+
+def test_gui_formats_scan_summary_as_categories(tmp_path):
+    from photodaterescue.gui_app import PhotoDateRescueApp
+    from photodaterescue.gui_models import GuiScanSummary
+
+    app = object.__new__(PhotoDateRescueApp)
+    summary = GuiScanSummary(
+        total_files=10,
+        photo_files=7,
+        video_files=3,
+        repairable_files=4,
+        ok_files=2,
+        high_risk_files=1,
+        unsupported_files=2,
+        error_files=1,
+        report_dir=tmp_path / "scan-report",
+    )
+
+    text = app._format_scan_summary(summary)
+
+    assert "结果分类" in text
+    assert "可以尝试修复：4" in text
+    assert "建议先人工抽查：1" in text
+    assert "暂不支持：2" in text
+    assert "读取出错：1" in text
+
+
+def test_gui_repair_summary_includes_next_steps(tmp_path):
+    from photodaterescue.gui_app import PhotoDateRescueApp
+    from photodaterescue.gui_models import GuiRepairSummary
+
+    app = object.__new__(PhotoDateRescueApp)
+    summary = GuiRepairSummary(copied=2, repaired=3, failed=0, skipped=1, output_dir=tmp_path / "out")
+
+    text = app._format_repair_summary(summary)
+
+    assert "建议下一步" in text
+    assert "打开输出文件夹" in text
+    assert "手动导入 Apple Photos" in text
+    assert "不要删除" in text
+
+
+def test_gui_platform_guidance_mentions_windows_boundary(monkeypatch):
+    from photodaterescue.gui_app import format_platform_guidance
+
+    monkeypatch.setenv("PHOTODATERESCUE_PLATFORM_OVERRIDE", "win32")
+
+    text = format_platform_guidance()
+
+    assert "普通照片 / 视频" in text
+    assert "不承诺 Live Photo" in text

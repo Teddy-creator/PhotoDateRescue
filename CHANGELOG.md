@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0 - GUI usability polish
+
+### Changed
+
+- GUI 会在选择源目录后更明确地展示推荐安全输出目录。
+- GUI 扫描结果改为按可修复、正常、高风险、不支持、错误分类展示。
+- GUI 修复完成后显示更清楚的 Apple Photos 手动导入下一步提示。
+- GUI 内直接展示平台边界，避免误解 Windows / Live Photo 支持范围。
+
 ## 0.1.2 - Windows GUI source support
 
 ### Changed
