@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- 图形界面改为跨平台普通照片 / 视频修复入口，Windows 可从源码运行 `photodaterescue-gui`。
+- Windows 图形界面使用 Windows 原生方式打开输出文件夹。
+- GUI 依赖提示根据当前平台显示 macOS 或 Windows 安装建议。
+
 ## 0.1.1 - Release download polish
 
 ### Changed

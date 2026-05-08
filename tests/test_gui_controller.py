@@ -133,6 +133,22 @@ def test_gui_controller_rejects_missing_required_dependency(monkeypatch):
         raise AssertionError("expected missing ExifTool to fail")
 
 
+def test_gui_controller_uses_windows_dependency_hint(monkeypatch):
+    from photodaterescue.gui_controller import GuiValidationError, PhotoDateRescueGuiController
+
+    monkeypatch.setenv("PHOTODATERESCUE_PLATFORM_OVERRIDE", "win32")
+    monkeypatch.setattr("photodaterescue.gui_controller.find_tool", lambda name: None)
+
+    try:
+        PhotoDateRescueGuiController().validate_required_dependencies()
+    except GuiValidationError as exc:
+        message = str(exc)
+        assert "exiftool.exe" in message
+        assert "PATH" in message
+    else:
+        raise AssertionError("expected missing ExifTool to fail")
+
+
 def test_gui_scan_writes_reports_and_returns_summary(monkeypatch, tmp_path):
     from photodaterescue.gui_controller import PhotoDateRescueGuiController
 

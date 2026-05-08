@@ -116,3 +116,15 @@ def test_gui_suggests_output_without_overwriting_existing_choice(tmp_path):
     app._suggest_output_from_source("/tmp/Another")
 
     assert app.output_var.get() == "/tmp/custom-output"
+
+
+def test_gui_open_folder_uses_windows_startfile(monkeypatch, tmp_path):
+    from photodaterescue.gui_app import open_folder
+
+    calls = []
+    monkeypatch.setenv("PHOTODATERESCUE_PLATFORM_OVERRIDE", "win32")
+    monkeypatch.setattr("os.startfile", lambda path: calls.append(path), raising=False)
+
+    open_folder(tmp_path)
+
+    assert calls == [tmp_path]

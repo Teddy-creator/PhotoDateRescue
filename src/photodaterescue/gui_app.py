@@ -1,7 +1,8 @@
-"""Tkinter desktop app for beginner macOS users."""
+"""Tkinter desktop app for beginner users."""
 
 from __future__ import annotations
 
+import os
 import subprocess
 import threading
 import tkinter as tk
@@ -11,6 +12,7 @@ from typing import Callable, Optional, TypeVar
 
 from .gui_controller import GuiValidationError, PhotoDateRescueGuiController
 from .gui_models import DependencyStatus, GuiRepairSummary, GuiScanSummary
+from .platforms import current_platform
 
 T = TypeVar("T")
 
@@ -47,7 +49,7 @@ class PhotoDateRescueApp:
 
         subtitle = ttk.Label(
             main,
-            text="安卓换 iPhone 后，照片时间线乱了？这个工具会生成安全副本，不修改原文件。",
+            text="安卓换 iPhone / Apple Photos 后，照片时间线乱了？这个工具会生成安全副本，不修改原文件。",
             wraplength=720,
         )
         subtitle.pack(anchor="w", pady=(6, 18))
@@ -193,7 +195,7 @@ class PhotoDateRescueApp:
         output = self.output_var.get()
         if not output:
             return
-        subprocess.run(["open", output], check=False)
+        open_folder(Path(output))
 
     def _run_background(
         self,
@@ -250,3 +252,14 @@ def main() -> None:
     root = tk.Tk()
     PhotoDateRescueApp(root)
     root.mainloop()
+
+
+def open_folder(path: Path) -> None:
+    platform = current_platform()
+    if platform.is_windows:
+        os.startfile(path)  # type: ignore[attr-defined]
+        return
+    if platform.is_macos:
+        subprocess.run(["open", str(path)], check=False)
+        return
+    subprocess.run(["xdg-open", str(path)], check=False)

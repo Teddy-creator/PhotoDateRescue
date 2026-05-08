@@ -1,4 +1,4 @@
-"""Display-independent controller for the beginner macOS GUI."""
+"""Display-independent controller for the beginner GUI."""
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ from typing import Union
 from .gui_models import DependencyStatus, GuiRepairSummary, GuiScanSummary
 from .metadata import ExifToolClient
 from .models import ScanStatus
+from .platforms import current_platform, exiftool_install_hint, ffmpeg_install_hint
 from .repair import repair_directory
 from .reports import write_reports
 from .scan import analyze_directory
@@ -24,6 +25,7 @@ class GuiValidationError(ValueError):
 
 class PhotoDateRescueGuiController:
     def check_dependencies(self) -> list[DependencyStatus]:
+        platform = current_platform()
         exiftool_path = find_tool("exiftool")
         ffmpeg_path = find_tool("ffmpeg")
         ffprobe_path = find_tool("ffprobe")
@@ -33,14 +35,14 @@ class PhotoDateRescueGuiController:
                 available=bool(exiftool_path),
                 path=exiftool_path,
                 required=True,
-                hint="缺少 ExifTool，无法可靠读取照片和视频时间信息。",
+                hint="缺少 ExifTool，无法可靠读取照片和视频时间信息。{0}".format(exiftool_install_hint(platform)),
             ),
             DependencyStatus(
                 name="FFmpeg",
                 available=bool(ffmpeg_path and ffprobe_path),
                 path=ffmpeg_path or ffprobe_path,
                 required=False,
-                hint="缺少 FFmpeg 时，部分视频信息可能无法完整处理。",
+                hint="缺少 FFmpeg 时，部分视频信息可能无法完整处理。{0}".format(ffmpeg_install_hint(platform)),
             ),
         ]
 
@@ -48,13 +50,14 @@ class PhotoDateRescueGuiController:
         missing = [status for status in self.check_dependencies() if status.required and not status.available]
         if not missing:
             return
+        platform = current_platform()
         lines = [
             "缺少必需依赖：{0}".format(", ".join(status.name for status in missing)),
             "",
             "PhotoDateRescue 需要 ExifTool 来读取照片和视频时间信息。",
             "请先安装 ExifTool，再重新打开本工具。",
             "",
-            "macOS 推荐安装命令：brew install exiftool",
+            exiftool_install_hint(platform).removeprefix("hint: "),
         ]
         raise GuiValidationError("\n".join(lines))
 

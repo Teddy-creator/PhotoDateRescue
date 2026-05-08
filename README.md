@@ -8,7 +8,7 @@
 
 它会扫描本地导出的媒体目录，分析照片和视频中的时间信息，并生成修复后的安全副本。原始文件不会被修改，也不会自动写入 Apple Photos 或 iCloud。
 
-主要面向安卓手机先导出到电脑，再由本工具处理，最后手动导入 Apple Photos / iCloud 的场景。macOS 是优先验证平台；Windows 支持核心的扫描、报告、普通照片 / 视频修复和 `adb` 导出流程；Windows 不承诺生成 Apple Photos 可识别的 Live Photo。
+主要面向安卓手机先导出到电脑，再由本工具处理，最后手动导入 Apple Photos / iCloud 的场景。macOS 是优先验证平台；Windows 支持核心的扫描、报告、普通照片 / 视频修复、源码图形界面和 `adb` 导出流程；Windows 不承诺生成 Apple Photos 可识别的 Live Photo。
 
 ## 普通用户先看这里
 
@@ -64,9 +64,9 @@ photodaterescue wizard
 
 `wizard` 是推荐入口。它会用中文一步步引导你选择原始媒体目录、输出目录、扫描报告、修复副本和 Live Photo 救援选项。
 
-## macOS 小白图形界面
+## 图形界面
 
-如果你不想使用终端，可以使用实验性的 macOS 图形界面。第一版 GUI 聚焦普通照片 / 视频时间线修复：
+如果你不想使用终端，可以使用实验性的图形界面。第一版 GUI 聚焦普通照片 / 视频时间线修复：
 
 - 选择安卓照片 / 视频导出文件夹
 - 选择安全输出文件夹
@@ -77,7 +77,7 @@ GUI 不会自动导入 Apple Photos，不会删除原图。高级动态照片 / 
 
 小白使用指南见 [`docs/manual/macos-gui-beginner-guide.md`](docs/manual/macos-gui-beginner-guide.md)。
 
-开发者可通过 `photodaterescue-gui` 从源码启动 GUI；维护者可用 `scripts/build-macos-app.sh` 构建本地 `.app`，详细打包说明见 [`docs/packaging/macos-gui.md`](docs/packaging/macos-gui.md)。
+macOS 用户可以下载 Release 里的 `.app`；开发者和 Windows 用户可通过 `photodaterescue-gui` 从源码启动 GUI。维护者可用 `scripts/build-macos-app.sh` 构建本地 macOS `.app`，详细打包说明见 [`docs/packaging/macos-gui.md`](docs/packaging/macos-gui.md)。
 
 ## 使用流程
 
@@ -182,6 +182,14 @@ Windows 还需要准备：
 photodaterescue doctor
 photodaterescue wizard
 ```
+
+如果想使用图形界面，可以在源码安装后运行：
+
+```powershell
+photodaterescue-gui
+```
+
+Windows 图形界面只承诺普通照片 / 视频时间线修复，不承诺 Live Photo 构建或 Apple Photos 识别。详细说明见 [`docs/manual/windows-gui-source-guide.md`](docs/manual/windows-gui-source-guide.md)。
 
 ## 快速开始
 

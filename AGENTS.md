@@ -39,7 +39,7 @@ Run `scripts/build-macos-app.sh` after GUI launcher, packaging, Tk, PyInstaller,
 
 # Feature Boundaries
 
-- The macOS GUI currently focuses on ordinary photo and video timeline repair.
+- The GUI currently focuses on ordinary photo and video timeline repair.
 - Motion Photo / Live Photo recovery is CLI-first and must be described as advanced or experimental unless real import validation supports stronger claims.
 - Windows supports core scan/report/ordinary photo/video repair and Android export flows.
 - Windows does not promise Apple Photos-recognized Live Photo generation.
