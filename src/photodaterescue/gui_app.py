@@ -31,6 +31,9 @@ class PhotoDateRescueApp:
         self.scan_button: Optional[ttk.Button] = None
         self.repair_button: Optional[ttk.Button] = None
         self.open_button: Optional[ttk.Button] = None
+        self._canvas: Optional[tk.Canvas] = None
+        self._content_window: Optional[int] = None
+        self._wrapped_labels: list[ttk.Label] = []
         self._busy = False
         self._scan_completed = False
         self._output_ready = False
@@ -39,33 +42,44 @@ class PhotoDateRescueApp:
 
     def _build_ui(self) -> None:
         self.root.title("PhotoDateRescue")
-        self.root.geometry("780x560")
-        self.root.minsize(700, 500)
+        self.root.geometry("920x720")
+        self.root.minsize(760, 560)
 
-        main = ttk.Frame(self.root, padding=20)
-        main.pack(fill="both", expand=True)
+        shell = ttk.Frame(self.root)
+        shell.pack(fill="both", expand=True)
+
+        canvas = tk.Canvas(shell, borderwidth=0, highlightthickness=0)
+        scrollbar = ttk.Scrollbar(shell, orient="vertical", command=canvas.yview)
+        canvas.configure(yscrollcommand=scrollbar.set)
+        scrollbar.pack(side="right", fill="y")
+        canvas.pack(side="left", fill="both", expand=True)
+
+        main = ttk.Frame(canvas, padding=20)
+        self._canvas = canvas
+        self._content_window = canvas.create_window((0, 0), window=main, anchor="nw")
+        main.bind("<Configure>", self._update_scroll_region)
+        canvas.bind("<Configure>", self._fit_content_width)
+        canvas.bind_all("<MouseWheel>", self._on_mousewheel)
 
         title = ttk.Label(main, text="PhotoDateRescue", font=("Helvetica", 24, "bold"))
         title.pack(anchor="w")
 
-        subtitle = ttk.Label(
+        subtitle = self._wrapped_label(
             main,
             text="安卓换 iPhone / Apple Photos 后，照片时间线乱了？这个工具会生成安全副本，不修改原文件。",
-            wraplength=720,
         )
         subtitle.pack(anchor="w", pady=(6, 18))
 
-        safety = ttk.Label(
+        safety = self._wrapped_label(
             main,
             text="安全原则：先扫描，再修复；先小样本验证；不自动导入 Apple Photos；不删除任何原始照片或视频。",
             foreground="#444444",
-            wraplength=720,
         )
         safety.pack(anchor="w", pady=(0, 16))
 
         platform_frame = ttk.LabelFrame(main, text="当前边界", padding=14)
         platform_frame.pack(fill="x", pady=(0, 14))
-        ttk.Label(platform_frame, textvariable=self.platform_var, wraplength=720, justify="left").pack(anchor="w")
+        self._wrapped_label(platform_frame, textvariable=self.platform_var, justify="left").pack(anchor="w", fill="x")
 
         folder_frame = ttk.LabelFrame(main, text="1. 选择文件夹", padding=14)
         folder_frame.pack(fill="x", pady=(0, 14))
@@ -83,7 +97,16 @@ class PhotoDateRescueApp:
 
         dependency_frame = ttk.LabelFrame(main, text="2. 环境状态", padding=14)
         dependency_frame.pack(fill="x", pady=(0, 14))
-        ttk.Label(dependency_frame, textvariable=self.dependency_var, wraplength=720, justify="left").pack(anchor="w")
+        dependency_header = ttk.Frame(dependency_frame)
+        dependency_header.pack(fill="x", pady=(0, 8))
+        self._wrapped_label(
+            dependency_header,
+            text="这里会检查 ExifTool / FFmpeg。ExifTool 是必需依赖；FFmpeg 主要影响部分视频处理。",
+            foreground="#444444",
+            justify="left",
+        ).pack(side="left", fill="x", expand=True)
+        ttk.Button(dependency_header, text="重新检查", command=self._show_dependency_status).pack(side="right", padx=(12, 0))
+        self._wrapped_label(dependency_frame, textvariable=self.dependency_var, justify="left").pack(anchor="w", fill="x")
 
         action_frame = ttk.LabelFrame(main, text="3. 扫描与修复", padding=14)
         action_frame.pack(fill="x", pady=(0, 14))
@@ -97,7 +120,32 @@ class PhotoDateRescueApp:
 
         status_frame = ttk.LabelFrame(main, text="处理结果", padding=14)
         status_frame.pack(fill="both", expand=True)
-        ttk.Label(status_frame, textvariable=self.status_var, wraplength=720, justify="left").pack(anchor="nw")
+        self._wrapped_label(status_frame, textvariable=self.status_var, justify="left").pack(anchor="nw", fill="x")
+
+    def _wrapped_label(self, parent: tk.Widget, **kwargs) -> ttk.Label:
+        kwargs.setdefault("wraplength", 720)
+        label = ttk.Label(parent, **kwargs)
+        self._wrapped_labels.append(label)
+        return label
+
+    def _update_scroll_region(self, _event: tk.Event) -> None:
+        if self._canvas is not None:
+            self._canvas.configure(scrollregion=self._canvas.bbox("all"))
+
+    def _fit_content_width(self, event: tk.Event) -> None:
+        if self._canvas is None or self._content_window is None:
+            return
+        content_width = max(event.width - 4, 1)
+        self._canvas.itemconfigure(self._content_window, width=content_width)
+        wraplength = max(content_width - 48, 320)
+        for label in self._wrapped_labels:
+            label.configure(wraplength=wraplength)
+
+    def _on_mousewheel(self, event: tk.Event) -> None:
+        if self._canvas is None:
+            return
+        if event.delta:
+            self._canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
     def _show_dependency_status(self) -> None:
         statuses = self.controller.check_dependencies()
@@ -106,11 +154,17 @@ class PhotoDateRescueApp:
 
     def _format_dependency(self, status: DependencyStatus) -> str:
         if status.available:
-            return "{0}: 已找到{1}".format(status.name, "（{0}）".format(status.path) if status.path else "")
+            return "{0}: 已找到\n  路径：{1}".format(status.name, status.path or "PATH 中可用")
         prefix = "{0}: 缺少".format(status.name)
         if status.required:
             prefix += "（必需）"
-        return "{0}。{1}".format(prefix, status.hint)
+        impact, _separator, hint = status.hint.partition("hint: ")
+        lines = ["{0}".format(prefix)]
+        if impact.strip():
+            lines.append("  影响：{0}".format(impact.strip()))
+        if hint.strip():
+            lines.append("  安装提示：{0}".format(hint.strip()))
+        return "\n".join(lines)
 
     def choose_source(self) -> None:
         if self._busy:

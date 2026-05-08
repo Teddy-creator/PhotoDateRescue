@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.4 - Windows GUI layout polish
+
+### Fixed
+
+- Windows GUI 主窗口改为可滚动布局，避免高缩放或较小窗口下内容显示不全。
+- 环境状态改为更清楚的多行展示，并增加“重新检查”按钮。
+
 ## 0.3.3 - Missing CSV validation order fix
 
 ### Fixed

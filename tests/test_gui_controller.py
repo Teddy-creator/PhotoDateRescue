@@ -150,6 +150,25 @@ def test_gui_controller_uses_windows_dependency_hint(monkeypatch):
         raise AssertionError("expected missing ExifTool to fail")
 
 
+def test_gui_formats_missing_dependency_as_readable_lines():
+    from photodaterescue.gui_app import PhotoDateRescueApp
+
+    status = DependencyStatus(
+        name="ExifTool",
+        available=False,
+        path=None,
+        required=True,
+        hint="缺少 ExifTool，无法可靠读取照片和视频时间信息。hint: Windows 可下载 ExifTool 并把 exiftool.exe 加入 PATH。",
+    )
+    app = object.__new__(PhotoDateRescueApp)
+
+    message = app._format_dependency(status)
+
+    assert "ExifTool: 缺少（必需）" in message
+    assert "影响：缺少 ExifTool" in message
+    assert "安装提示：Windows 可下载 ExifTool" in message
+
+
 def test_gui_scan_writes_reports_and_returns_summary(monkeypatch, tmp_path):
     from photodaterescue.gui_controller import PhotoDateRescueGuiController
 

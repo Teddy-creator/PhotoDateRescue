@@ -3,7 +3,7 @@ from photodaterescue.cli import main
 
 
 def test_package_exposes_version():
-    assert __version__ == "0.3.3"
+    assert __version__ == "0.3.4"
 
 
 def test_pyproject_version_matches_package():
