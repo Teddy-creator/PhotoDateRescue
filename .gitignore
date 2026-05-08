@@ -7,12 +7,14 @@ __pycache__/
 .ruff_cache/
 .venv/
 .venv-gui/
+.venv-windows-gui/
 venv/
 
 # Build artifacts
 build/
 dist/
 *.spec
+PhotoDateRescue-v*-*.zip
 
 # OS / editor
 .DS_Store

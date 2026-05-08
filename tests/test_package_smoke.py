@@ -3,7 +3,19 @@ from photodaterescue.cli import main
 
 
 def test_package_exposes_version():
-    assert __version__ == "0.2.1"
+    assert __version__ == "0.3.0"
+
+
+def test_pyproject_version_matches_package():
+    from pathlib import Path
+
+    try:
+        import tomllib
+    except ModuleNotFoundError:
+        import tomli as tomllib
+
+    data = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
+    assert data["project"]["version"] == __version__
 
 
 def test_module_entrypoint_runs_help():

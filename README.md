@@ -18,6 +18,7 @@
 | --- | --- |
 | macOS，不想用终端 | 下载 Release 里的 `PhotoDateRescue-*-macOS.zip` |
 | Windows，不想写长命令但可以安装 Python | 按 Windows 源码指南运行 `photodaterescue-gui` |
+| Windows，想试用 exe | 查看 Release 或 Actions 里的 Windows exe alpha，注意它未签名且不内置 ExifTool |
 | 想处理高级 Motion Photo / Live Photo | 使用 CLI，并先 dry-run |
 
 macOS 图形界面下载步骤：
@@ -201,6 +202,8 @@ photodaterescue-gui
 ```
 
 Windows 图形界面只承诺普通照片 / 视频时间线修复，不承诺 Live Photo 构建或 Apple Photos 识别。详细说明见 [`docs/manual/windows-gui-source-guide.md`](docs/manual/windows-gui-source-guide.md)。
+
+实验性 Windows `.exe` 打包说明见 [`docs/packaging/windows-exe-alpha.md`](docs/packaging/windows-exe-alpha.md)。该包不内置 ExifTool / FFmpeg，且未签名。
 
 ## 快速开始
 

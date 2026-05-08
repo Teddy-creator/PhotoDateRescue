@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.0 - Windows exe alpha packaging
+
+### Added
+
+- 新增 GitHub Actions Windows GUI exe alpha 构建工作流。
+- 新增 Windows exe alpha 本地打包脚本。
+- 新增 Windows exe alpha 打包说明文档。
+
+### Known Limitations
+
+- Windows exe alpha 不内置 ExifTool / FFmpeg / adb。
+- Windows exe alpha 未签名，可能触发 SmartScreen 或杀软提示。
+
 ## 0.2.1 - First-run copy polish
 
 ### Changed

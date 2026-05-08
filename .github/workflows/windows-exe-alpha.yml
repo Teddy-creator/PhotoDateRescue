@@ -1,0 +1,60 @@
+name: Windows EXE Alpha
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v0.3.*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows-exe:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install package and test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Run tests
+        run: python -m pytest -q
+
+      - name: Build Windows GUI executable
+        shell: pwsh
+        run: scripts/build-windows-exe.ps1
+
+      - name: Prepare package name
+        shell: pwsh
+        run: |
+          $safeRefName = "${{ github.ref_name }}" -replace '[^A-Za-z0-9_.-]', '-'
+          "WINDOWS_ALPHA_ZIP=PhotoDateRescue-$safeRefName-windows-exe-alpha.zip" >> $env:GITHUB_ENV
+
+      - name: Package artifact
+        shell: pwsh
+        run: |
+          Compress-Archive -Path dist/PhotoDateRescue -DestinationPath $env:WINDOWS_ALPHA_ZIP -Force
+          Get-FileHash $env:WINDOWS_ALPHA_ZIP -Algorithm SHA256
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PhotoDateRescue-windows-exe-alpha
+          path: ${{ env.WINDOWS_ALPHA_ZIP }}
+          if-no-files-found: error
+
+      - name: Attach Windows alpha zip to release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.WINDOWS_ALPHA_ZIP }}
