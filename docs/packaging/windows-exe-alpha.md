@@ -2,6 +2,8 @@
 
 This guide is for maintainers who want to build the experimental Windows GUI executable.
 
+If you are a normal user, prefer downloading the latest Windows alpha zip from the repository Releases page. This page explains how maintainers build that package.
+
 ## Status
 
 The Windows `.exe` is alpha. It is a convenience package for ordinary photo / video timeline repair, not a signed installer.

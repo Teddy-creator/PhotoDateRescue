@@ -1,6 +1,8 @@
 # Windows 图形界面源码运行指南
 
-这份指南面向 Windows 用户。当前 Windows 图形界面适合处理普通照片 / 视频时间线修复，不承诺生成 Apple Photos 可识别的 Live Photo。
+这份指南面向想在 Windows 上从源码运行图形界面的用户。如果你只是想直接下载 `.exe`，请优先看 README 里的“快速下载”和“先装依赖”。
+
+当前 Windows 图形界面适合处理普通照片 / 视频时间线修复，不承诺生成 Apple Photos 可识别的 Live Photo。
 
 ## 适合解决什么问题
 
@@ -33,13 +35,53 @@ Windows GUI 当前不承诺：
 - ExifTool，并确保 `exiftool.exe` 已加入 `PATH`。
 - FFmpeg，建议安装并把 `ffmpeg.exe`、`ffprobe.exe` 加入 `PATH`，这样视频处理更完整。
 
-可以先运行：
+### 安装 ExifTool
+
+ExifTool 是必需依赖。没有 ExifTool 时，GUI 会阻止扫描和修复。
+
+1. 打开 ExifTool 官网：[https://exiftool.org/](https://exiftool.org/)。
+2. 下载 Windows Executable。
+3. 解压后把 `exiftool(-k).exe` 重命名为 `exiftool.exe`。
+4. 新建目录，例如 `C:\Tools\exiftool\`，把 `exiftool.exe` 放进去。
+5. 把 `C:\Tools\exiftool` 加到 Windows 的用户 `Path` 环境变量。
+6. 重新打开 PowerShell 或 PhotoDateRescue。
+
+验证：
+
+```powershell
+exiftool -ver
+```
+
+如果能输出版本号，说明 ExifTool 已经可用。
+
+### 安装 FFmpeg
+
+FFmpeg 是推荐依赖。没有 FFmpeg 时，部分视频时间读取和视频副本处理可能不完整。
+
+推荐用 PowerShell：
+
+```powershell
+winget install Gyan.FFmpeg
+```
+
+如果不能使用 `winget`，可以从 [Gyan FFmpeg builds](https://www.gyan.dev/ffmpeg/builds/) 下载，解压后把其中的 `bin` 目录加入 `Path`。
+
+验证：
+
+```powershell
+ffmpeg -version
+ffprobe -version
+```
+
+### 检查 PhotoDateRescue 环境
+
+源码安装完成后可以运行：
 
 ```powershell
 photodaterescue doctor
 ```
 
-如果 `ExifTool` 显示 missing，请先修好它。没有 ExifTool 时，GUI 会阻止扫描和修复。
+如果 `ExifTool` 显示 missing，请先修好它。图形界面里也可以看“环境状态”，再点击“重新检查”。
 
 ## 从源码启动 GUI
 
