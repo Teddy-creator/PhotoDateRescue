@@ -121,6 +121,7 @@ def test_gui_controller_reports_required_and_optional_dependencies(monkeypatch):
 def test_gui_controller_rejects_missing_required_dependency(monkeypatch):
     from photodaterescue.gui_controller import GuiValidationError, PhotoDateRescueGuiController
 
+    monkeypatch.setenv("PHOTODATERESCUE_PLATFORM_OVERRIDE", "darwin")
     monkeypatch.setattr("photodaterescue.gui_controller.find_tool", lambda name: None)
 
     try:

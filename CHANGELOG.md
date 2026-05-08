@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.2 - Windows CI compatibility fix
+
+### Fixed
+
+- 修复 Windows CI 中 macOS 专属向导测试未显式指定平台导致的失败。
+- 修复缺失输入文件时 CLI 先检查 ExifTool 而不是先报告文件缺失的问题。
+
 ## 0.3.1 - Windows timezone dependency fix
 
 ### Fixed

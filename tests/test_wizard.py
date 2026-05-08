@@ -129,6 +129,7 @@ def test_live_flow_runs_dry_run_then_build_after_confirmation(monkeypatch, tmp_p
         return result
 
     monkeypatch.setattr("photodaterescue.wizard.run_doctor", lambda: 0)
+    monkeypatch.setenv("PHOTODATERESCUE_PLATFORM_OVERRIDE", "darwin")
     monkeypatch.setattr("photodaterescue.wizard.ExifToolClient", lambda: object())
     monkeypatch.setattr("photodaterescue.wizard.run_live_workflow", fake_live_workflow)
 
@@ -173,6 +174,7 @@ def test_recommended_flow_can_build_repair_and_live(monkeypatch, tmp_path):
         extract_source_type_counts = {}
 
     monkeypatch.setattr("photodaterescue.wizard.run_doctor", lambda: 0)
+    monkeypatch.setenv("PHOTODATERESCUE_PLATFORM_OVERRIDE", "darwin")
     monkeypatch.setattr("photodaterescue.wizard.ExifToolClient", lambda: object())
     monkeypatch.setattr("photodaterescue.wizard.analyze_directory", lambda *args, **kwargs: calls.append("scan") or [])
     monkeypatch.setattr("photodaterescue.wizard.write_reports", lambda *args, **kwargs: calls.append("write_reports"))

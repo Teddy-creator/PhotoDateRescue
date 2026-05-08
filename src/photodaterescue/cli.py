@@ -232,6 +232,17 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _path_exists_for_cli(value: str) -> bool:
+    try:
+        return Path(value).expanduser().exists()
+    except OSError:
+        return False
+
+
+def _has_missing_existing_path_args(*values: str) -> bool:
+    return any(not _path_exists_for_cli(value) for value in values)
+
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = build_parser()
     try:
@@ -305,6 +316,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return 0
 
     if args.command == "live-inspect":
+        if _has_missing_existing_path_args(args.image, args.video):
+            try:
+                inspect_live_pair(Path(args.image), Path(args.video), ExifToolClient(exiftool_path="exiftool"))
+            except (FileNotFoundError, NotADirectoryError, ValueError) as exc:
+                print(str(exc))
+                return 2
         client = ExifToolClient()
         if not client.is_available():
             print("exiftool is required. Run `photodaterescue doctor` for details.")
@@ -384,6 +401,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return 0
 
     if args.command == "motion-extract":
+        if not _path_exists_for_cli(args.candidates_csv):
+            print("Motion candidates CSV does not exist: {0}".format(Path(args.candidates_csv)))
+            return 2
         try:
             result = extract_motion_photos(
                 candidates_csv=Path(args.candidates_csv),
