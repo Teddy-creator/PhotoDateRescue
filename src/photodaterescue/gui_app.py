@@ -57,7 +57,7 @@ class PhotoDateRescueApp:
 
         safety = ttk.Label(
             main,
-            text="安全原则：先扫描，再修复；不自动导入 Apple Photos；不删除任何原始照片或视频。",
+            text="安全原则：先扫描，再修复；先小样本验证；不自动导入 Apple Photos；不删除任何原始照片或视频。",
             foreground="#444444",
             wraplength=720,
         )

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.1 - First-run copy polish
+
+### Changed
+
+- README 首屏增加 macOS / Windows / 高级 CLI 的入口选择表。
+- GUI 首屏安全提示补充“先小样本验证”。
+- Release 说明补充陌生用户下载选择和边界提醒。
+
 ## 0.2.0 - GUI usability polish
 
 ### Changed

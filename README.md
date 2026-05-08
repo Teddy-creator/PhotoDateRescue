@@ -12,7 +12,15 @@
 
 ## 普通用户先看这里
 
-如果你只是想修复自己的相册时间线，优先下载 GitHub Release 里的 macOS 图形界面压缩包：
+如果你只是想修复自己的相册时间线，先按你的系统选择入口：
+
+| 你的情况 | 推荐入口 |
+| --- | --- |
+| macOS，不想用终端 | 下载 Release 里的 `PhotoDateRescue-*-macOS.zip` |
+| Windows，不想写长命令但可以安装 Python | 按 Windows 源码指南运行 `photodaterescue-gui` |
+| 想处理高级 Motion Photo / Live Photo | 使用 CLI，并先 dry-run |
+
+macOS 图形界面下载步骤：
 
 1. 打开 [Releases](https://github.com/Teddy-creator/PhotoDateRescue/releases)。
 2. 下载最新版本里的 `PhotoDateRescue-*-macOS.zip`。
@@ -22,7 +30,9 @@
 
 如果 macOS 提示“无法验证开发者”，这是未签名开源工具的常见提示。确认来源是本仓库 Release 后，请使用右键“打开”，不要直接双击。
 
-开发者或想使用高级命令的用户，再参考下面的源码安装方式。
+Windows 用户请看 [`docs/manual/windows-gui-source-guide.md`](docs/manual/windows-gui-source-guide.md)。开发者或想使用高级命令的用户，再参考下面的源码安装方式。
+
+无论使用哪种入口，都建议先用少量样本验证，确认时间线正确后再批量导入 Apple Photos。
 
 ## Features
 

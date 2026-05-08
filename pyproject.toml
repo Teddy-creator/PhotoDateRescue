@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "PhotoDateRescue"
-version = "0.2.0"
+version = "0.2.1"
 description = "Mac-first tool for rescuing photo and video timeline metadata after Android-to-iPhone migrations."
 readme = "README.md"
 requires-python = ">=3.9"
