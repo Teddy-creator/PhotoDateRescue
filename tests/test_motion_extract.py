@@ -228,7 +228,9 @@ def test_motion_extract_rejects_non_jpeg_candidates(tmp_path):
     assert "Only JPEG/JPG" in errors[0]["error"]
 
 
-def test_cli_motion_extract_reports_missing_candidates_csv_without_traceback(tmp_path, capsys):
+def test_cli_motion_extract_reports_missing_candidates_csv_without_traceback(monkeypatch, tmp_path, capsys):
+    monkeypatch.setattr("photodaterescue.cli.ExifToolClient", lambda: (_ for _ in ()).throw(AssertionError("should not check ExifTool before validating input CSV")))
+
     exit_code = main(
         [
             "motion-extract",

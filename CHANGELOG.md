@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.3 - Missing CSV validation order fix
+
+### Fixed
+
+- 修复 `motion-extract` 缺失 `--candidates-csv` 时仍会先检查 ExifTool 的问题。
+
 ## 0.3.2 - Windows CI compatibility fix
 
 ### Fixed

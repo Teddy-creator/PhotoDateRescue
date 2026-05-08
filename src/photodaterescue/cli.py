@@ -360,6 +360,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         print("Manifest: {0}".format(result.manifest_path))
         return 0
 
+    if args.command == "motion-extract" and not _path_exists_for_cli(args.candidates_csv):
+        print("Motion candidates CSV does not exist: {0}".format(Path(args.candidates_csv)))
+        return 2
+
     client = ExifToolClient()
     if not client.is_available():
         print("exiftool is required. Run `photodaterescue doctor` for details.")
@@ -401,9 +405,6 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return 0
 
     if args.command == "motion-extract":
-        if not _path_exists_for_cli(args.candidates_csv):
-            print("Motion candidates CSV does not exist: {0}".format(Path(args.candidates_csv)))
-            return 2
         try:
             result = extract_motion_photos(
                 candidates_csv=Path(args.candidates_csv),
