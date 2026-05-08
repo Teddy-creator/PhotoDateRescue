@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+.venv-gui/
+venv/
+
+# Build artifacts
+build/
+dist/
+*.spec
+
+# OS / editor
+.DS_Store
+
+# Local outputs
+reports/
+output/
+tmp/
+PhotoDateRescue-output*/
+*-raw-export/
+*-live-full-build*/
+*-live-full-dryrun*/
+*.photoslibrary/
+
+# Internal planning notes
+docs/superpowers/

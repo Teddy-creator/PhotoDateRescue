@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "PhotoDateRescue"
+version = "0.1.0"
+description = "Mac-first tool for rescuing photo and video timeline metadata after Android-to-iPhone migrations."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+  { name = "C1oud" }
+]
+license = "MIT"
+dependencies = [
+  "Pillow>=10.0.0",
+  "pillow-heif>=0.18.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "Pillow>=10.0.0",
+  "pillow-heif>=0.18.0",
+  "pytest>=8.0.0",
+]
+
+[project.scripts]
+photodaterescue = "photodaterescue.cli:main"
+photodaterescue-gui = "photodaterescue.gui_launcher:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
