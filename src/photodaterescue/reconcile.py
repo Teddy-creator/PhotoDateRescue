@@ -133,7 +133,7 @@ def _build_visual_signature(path: Path) -> Tuple[int, int, str]:
 
 def _dhash(image: Image.Image, size: int = 8) -> str:
     grayscale = image.resize((size + 1, size), Image.Resampling.LANCZOS).convert("L")
-    pixels = list(grayscale.getdata())
+    pixels = list(grayscale.tobytes())
     width = size + 1
     value = 0
     for row in range(size):

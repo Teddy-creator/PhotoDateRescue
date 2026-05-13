@@ -16,6 +16,8 @@ Important boundaries:
 - Windows Live Photo generation is not supported.
 - The executable is unsigned and may trigger SmartScreen or antivirus warnings.
 
+Runtime tool discovery checks the user's `PATH` first. If a tool is not on `PATH`, the Windows executable also checks for `exiftool.exe`, `ffmpeg.exe`, and `ffprobe.exe` next to `PhotoDateRescue.exe`. This lets maintainers or advanced users test a portable folder without changing the system environment.
+
 ## GitHub Actions Build
 
 The recommended alpha build path is GitHub Actions:
@@ -43,3 +45,4 @@ dist\PhotoDateRescue\PhotoDateRescue.exe
 ```
 
 Before sharing the output, test it on a Windows machine with ExifTool installed and available in `PATH`.
+For portable-folder testing, placing `exiftool.exe` next to `PhotoDateRescue.exe` is also supported.

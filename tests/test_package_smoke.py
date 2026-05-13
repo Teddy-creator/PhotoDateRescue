@@ -50,11 +50,25 @@ def test_gui_modules_import_without_launching_window():
     assert callable(gui_launcher.main)
 
 
+def test_gui_launcher_help_does_not_start_window(monkeypatch, capsys):
+    import photodaterescue.gui_launcher as gui_launcher
+
+    started = []
+    monkeypatch.setattr(gui_launcher, "main", lambda: started.append(True))
+
+    exit_code = gui_launcher.cli(["--help"])
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert not started
+    assert "PhotoDateRescue" in captured.out
+
+
 def test_pyproject_exposes_gui_script():
     from pathlib import Path
 
     text = Path("pyproject.toml").read_text(encoding="utf-8")
-    assert 'photodaterescue-gui = "photodaterescue.gui_launcher:main"' in text
+    assert 'photodaterescue-gui = "photodaterescue.gui_launcher:cli"' in text
 
 
 def test_gui_busy_state_disables_primary_buttons():

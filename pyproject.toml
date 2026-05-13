@@ -28,7 +28,7 @@ dev = [
 
 [project.scripts]
 photodaterescue = "photodaterescue.cli:main"
-photodaterescue-gui = "photodaterescue.gui_launcher:main"
+photodaterescue-gui = "photodaterescue.gui_launcher:cli"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
