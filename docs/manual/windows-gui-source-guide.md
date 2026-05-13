@@ -54,6 +54,8 @@ exiftool -ver
 
 如果能输出版本号，说明 ExifTool 已经可用。
 
+如果你使用的是 Windows `.exe` 包，也可以把 `exiftool.exe` 放在 `PhotoDateRescue.exe` 同一个文件夹里。PhotoDateRescue 会先检查系统 `PATH`，如果没找到，再检查 exe 同目录。
+
 ### 安装 FFmpeg
 
 FFmpeg 是推荐依赖。没有 FFmpeg 时，部分视频时间读取和视频副本处理可能不完整。
@@ -72,6 +74,8 @@ winget install Gyan.FFmpeg
 ffmpeg -version
 ffprobe -version
 ```
+
+如果你使用的是 Windows `.exe` 包，也可以把 `ffmpeg.exe` 和 `ffprobe.exe` 放在 `PhotoDateRescue.exe` 同一个文件夹里。它们不是必需依赖，但视频处理会更完整。
 
 ### 检查 PhotoDateRescue 环境
 
